@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Horror Street - 9:00 PM Entity</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      background-color: #000;
+      color: #fff;
+      font-family: 'Courier New', Courier, monospace;
+      user-select: none;
+    }
+    #canvas-container {
+      width: 100vw;
+      height: 100vh;
+    }
+    #ui {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      z-index: 10;
+      pointer-events: none;
+    }
+    .hud-text {
+      font-size: 20px;
+      color: #ff3333;
+      text-shadow: 0 0 5px #000;
+      margin-bottom: 5px;
+    }
+    #crosshair {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 6px;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.5);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      z-index: 10;
+    }
+    #overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0,0,0,0.85);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 20;
+    }
+    #overlay h1 { font-size: 42px; color: #cc0000; margin-bottom: 10px; }
+    #overlay p { font-size: 18px; color: #ccc; margin-bottom: 20px; }
+    #start-btn {
+      padding: 12px 24px;
+      font-size: 18px;
+      background: #440000;
+      color: #fff;
+      border: 1px solid #ff0000;
+      cursor: pointer;
+    }
+    #start-btn:hover { background: #880000; }
+  </style>
+</head>
+<body>
+
+  <div id="ui">
+    <div class="hud-text" id="clock">TIME: 08:30 PM</div>
+    <div class="hud-text" id="status" style="font-size: 14px; color: #aaa;">Status: Street is quiet...</div>
+  </div>
+
+  <div id="crosshair"></div>
+
+  <div id="overlay">
+    <h1>THE DARK STREET</h1>
+    <p>Survive the night. Do not let IT catch you after 9:00 PM.</p>
+    <p>Controls: WASD = Move | Mouse = Look</p>
+    <button id="start-btn">ENTER STREET</button>
+  </div>
+
+  <div id="canvas-container"></div>
+
+  <!-- Three.js Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+  <script>
+    // --- Game Variables ---
+    let scene, camera, renderer;
+    let moveForward = false, moveBackward = false, moveLeft = false, moveRight = false;
+    let prevTime = performance.now();
+    const velocity = new THREE.Vector3();
+    const direction = new THREE.Vector3();
+
+    // Clock Logic (In-game fast time)
+    let gameMinutes = 8 * 60 + 30; // Starts at 8:30 PM (510 mins)
+    const entityAppearsTime = 21 * 60; // 9:00 PM (1260 mins / 21:00)
+    let entitySpawned = false;
+    let gameOver = false;
+
+    // Entities & Environment
+    let streetLights = [];
+    let entityGroup, entityLight;
+    const playerPos = new THREE.Vector3(0, 1.6, 0);
+
+    const clockElement = document.getElementById('clock');
+    const statusElement = document.getElementById('status');
+    const overlay = document.getElementById('overlay');
+    const startBtn = document.getElementById('start-btn');
+
+    // --- Setup Scene ---
+    function init() {
+      scene = new THREE.Scene();
+      scene.fog = new THREE.FogExp2(0x050508, 0.08);
+
+      camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+      camera.position.set(0, 1.6, 0);
+
+      renderer = new THREE.WebGLRenderer({ antialias: true });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setPixelRatio(window.devicePixelRatio);
+      renderer.shadowMap.enabled = true;
+      renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+      document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+      // Ambient Dark Light
+      const ambientLight = new THREE.AmbientLight(0x0a0a12, 0.2);
+      scene.add(ambientLight);
+
+      // Flashlight attached to Camera
+      const flashlight = new THREE.SpotLight(0xffffff, 2, 25, Math.PI / 6, 0.5, 1);
+      flashlight.position.set(0, 0, 0);
+      camera.add(flashlight);
+      flashlight.target = camera;
+      scene.add(camera);
+
+      build
