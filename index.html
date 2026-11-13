@@ -1,134 +1,46 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#080b10">
-  <title>Get Home by 9 — The Street</title>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Special+Elite&family=Share+Tech+Mono&display=swap');
-    :root { color-scheme: dark; --blood: #b94b43; --mist: #a9bac0; }
-    * { box-sizing: border-box; }
-    html, body { width:100%; height:100%; margin:0; overflow:hidden; background:#080b10; color:#d5dcda; }
-    body { font-family:'Share Tech Mono', monospace; }
-    canvas { display:block; }
-    #scene { position:fixed; inset:0; }
-    #vignette { position:fixed; inset:0; pointer-events:none; background:radial-gradient(ellipse at center, transparent 20%,rgba(0,0,0,.24) 62%,rgba(0,0,0,.88) 120%); z-index:2; }
-    #grain { position:fixed; inset:-50%; width:200%; height:200%; pointer-events:none; opacity:.075; z-index:3; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E"); animation:grain .22s steps(2) infinite; }
-    @keyframes grain { 0%{transform:translate(0,0)} 25%{transform:translate(2%,-1%)} 50%{transform:translate(-1%,2%)} 75%{transform:translate(1%,1%)} }
-    #hud { position:fixed; z-index:4; inset:0; pointer-events:none; padding:24px 28px; display:flex; flex-direction:column; justify-content:space-between; text-shadow:0 2px 8px #000; }
-    .topline { display:flex; justify-content:space-between; align-items:flex-start; gap:20px; }
-    .brand { font:clamp(20px,3vw,30px) 'Special Elite',serif; letter-spacing:.12em; color:#e4e0d5; }
-    .brand small { display:block; font:11px 'Share Tech Mono',monospace; color:#9ba5a4; letter-spacing:.22em; margin-top:7px; }
-    #clock { font-size:clamp(17px,2.4vw,25px); color:#d7c8a9; letter-spacing:.1em; text-align:right; }
-    #clock small { display:block; font-size:11px; color:#88918e; margin-top:6px; }
-    .bottomline { display:flex; justify-content:space-between; align-items:flex-end; color:#bbc3c0; font-size:12px; letter-spacing:.08em; }
-    #objective { max-width:320px; line-height:1.6; color:#c3c4b8; }
-    #coords { color:#87928f; text-align:right; }
-    #crosshair { position:fixed; z-index:4; left:50%; top:50%; width:10px; height:10px; transform:translate(-50%,-50%); pointer-events:none; opacity:.65; }
-    #crosshair:before,#crosshair:after { content:''; position:absolute; background:#ddd; box-shadow:0 0 5px #fff; }
-    #crosshair:before { width:1px; height:10px; left:4px; }
-    #crosshair:after { height:1px; width:10px; top:4px; }
-    #overlay { position:fixed; z-index:10; inset:0; display:grid; place-items:center; padding:20px; background:rgba(3,5,8,.74); backdrop-filter:blur(5px); transition:opacity .5s; }
-    #overlay.hidden { opacity:0; pointer-events:none; }
-    .card { width:min(600px,100%); text-align:center; padding:clamp(26px,6vw,54px); border:1px solid rgba(190,201,196,.2); background:linear-gradient(145deg,rgba(13,17,21,.93),rgba(7,9,12,.94)); box-shadow:0 20px 100px #000; }
-    .eyebrow { color:#ad665d; font-size:11px; letter-spacing:.35em; margin-bottom:18px; }
-    h1 { margin:0; font:clamp(40px,10vw,76px) 'Special Elite',serif; color:#e5e0d5; font-weight:400; letter-spacing:.04em; line-height:1; text-shadow:0 0 28px rgba(175,63,54,.22); }
-    .subtitle { color:#9ba5a3; line-height:1.8; margin:22px auto 28px; max-width:430px; font-size:14px; }
-    button { border:1px solid #9c544d; color:#e6d9cd; background:rgba(74,29,28,.32); padding:14px 28px; font:14px 'Share Tech Mono',monospace; letter-spacing:.18em; cursor:pointer; transition:.2s; }
-    button:hover { background:#7d3933; box-shadow:0 0 24px rgba(185,75,67,.25); }
-    .controls { border-top:1px solid rgba(200,210,205,.12); padding-top:18px; margin-top:28px; color:#798582; font-size:11px; line-height:2; }
-    .key { color:#c9d0cc; border:1px solid #45504e; padding:2px 6px; margin:0 2px; }
-    #sound-toggle { position:fixed; z-index:5; right:22px; bottom:65px; pointer-events:auto; border:1px solid #59605d; background:rgba(4,7,9,.65); color:#aeb8b3; padding:9px 12px; font-size:10px; letter-spacing:.1em; }
-    @media(max-width:600px) { #hud{padding:16px} .bottomline{font-size:10px} #objective{max-width:210px} #sound-toggle{right:14px;bottom:76px} }
-  </style>
-  <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"}}</script>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"><meta name="theme-color" content="#080b10">
+<title>Get Home by 9 — Hollow Street</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Special+Elite&family=Share+Tech+Mono&display=swap');
+*{box-sizing:border-box}html,body{width:100%;height:100%;margin:0;overflow:hidden;background:#080b10;color:#e5e0d5;font-family:'Share Tech Mono',monospace;touch-action:none}#scene{position:fixed;inset:0}canvas{display:block}.vignette,.grain{position:fixed;inset:0;pointer-events:none}.vignette{z-index:2;background:radial-gradient(ellipse at center,transparent 20%,rgba(0,0,0,.25) 60%,rgba(0,0,0,.85) 120%)}.grain{z-index:3;opacity:.08;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E");animation:grain .22s steps(2) infinite}@keyframes grain{50%{transform:translate(1%,-1%)}}#hud{position:fixed;z-index:4;inset:0;padding:22px 26px;pointer-events:none;display:flex;flex-direction:column;justify-content:space-between;text-shadow:0 2px 9px #000}.top{display:flex;justify-content:space-between;align-items:flex-start}.brand{font:clamp(20px,3vw,30px) 'Special Elite',serif;letter-spacing:.12em}.brand small{display:block;margin-top:6px;color:#9ba5a4;font:11px 'Share Tech Mono',monospace;letter-spacing:.2em}#clock{text-align:right;color:#d7c8a9;font-size:clamp(16px,2.4vw,24px)}#clock small{display:block;color:#9a9b91;font-size:10px;margin-top:5px}.bottom{display:flex;justify-content:space-between;align-items:end;color:#c3c4b8;font-size:11px;line-height:1.6}#objective{max-width:280px}#coords{text-align:right;color:#87928f}#overlay{position:fixed;z-index:10;inset:0;display:grid;place-items:center;padding:18px;background:rgba(3,5,8,.78);backdrop-filter:blur(5px);transition:opacity .4s}#overlay.hidden{opacity:0;pointer-events:none}.card{width:min(580px,100%);padding:clamp(24px,6vw,50px);text-align:center;border:1px solid #4d504a;background:rgba(10,13,16,.96);box-shadow:0 20px 100px #000}.eyebrow{color:#ad665d;font-size:10px;letter-spacing:.3em}h1{font:normal clamp(38px,9vw,72px)/1 'Special Elite',serif;letter-spacing:.04em;margin:16px 0;color:#e5e0d5}.subtitle{color:#a9b0ad;font-size:13px;line-height:1.8;margin:18px auto 24px}button{border:1px solid #9c544d;color:#e6d9cd;background:rgba(74,29,28,.32);padding:12px 17px;font:12px 'Share Tech Mono',monospace;letter-spacing:.12em;cursor:pointer;touch-action:manipulation}button:active{background:#713832}#sound{position:fixed;z-index:5;right:18px;bottom:18px;background:rgba(5,8,10,.75);border-color:#59605d;padding:9px 12px;font-size:10px}.touch-controls{display:none;position:fixed;z-index:6;inset:auto 0 18px;justify-content:space-between;align-items:end;padding:0 22px;pointer-events:none}.stick{width:116px;height:116px;border:1px solid rgba(220,225,215,.42);border-radius:50%;background:rgba(8,12,15,.3);position:relative;pointer-events:auto;touch-action:none;box-shadow:inset 0 0 24px rgba(0,0,0,.35)}.stick:after{content:'';position:absolute;inset:36%;border:1px solid rgba(220,225,215,.18);border-radius:50%}.knob{position:absolute;width:44px;height:44px;left:50%;top:50%;transform:translate(-50%,-50%);border-radius:50%;border:1px solid rgba(232,222,193,.8);background:rgba(160,139,94,.48);box-shadow:0 0 14px rgba(0,0,0,.6);pointer-events:none}.right-controls{display:flex;flex-direction:column;align-items:center;gap:12px;pointer-events:auto}.right-controls button{border-radius:50%;width:58px;height:58px;padding:4px;background:rgba(8,12,15,.72);font-size:9px;letter-spacing:.04em;border-color:#aaa17e}.right-controls button[aria-pressed=true]{background:rgba(189,151,82,.48);color:white}@media(hover:none),(pointer:coarse){.touch-controls.active{display:flex}#sound{bottom:20px;right:14px}.bottom{padding-bottom:128px}.card{max-height:92dvh;overflow:auto}}@media(max-width:420px){.stick{width:100px;height:100px}.knob{width:40px;height:40px}#hud{padding:16px}.bottom{font-size:9px}}
+</style>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"}}</script>
 </head>
 <body>
-  <div id="scene"></div><div id="vignette"></div><div id="grain"></div><div id="crosshair"></div>
-  <div id="hud">
-    <div class="topline"><div class="brand">GET HOME BY 9<small>NEIGHBORHOOD • 8:42 PM</small></div><div id="clock">8:42 PM<small>GET HOME BEFORE NINE</small></div></div>
-    <div class="bottomline"><div id="objective">The street is quiet tonight.<br>Keep walking. Don't look back.</div><div id="coords">WALKING HOME<br>ROSEWOOD LANE</div></div>
-  </div>
-  <button id="sound-toggle">SOUND: OFF</button>
-  <div id="overlay"><div class="card">
-    <div class="eyebrow">A QUIET STREET • A LONG WALK HOME</div>
-    <h1>GET HOME<br>BY NINE</h1>
-    <p class="subtitle">The neighborhood looks familiar after dark.<br>It just feels like something is different tonight.</p>
-    <button id="begin">STEP INTO THE STREET</button>
-    <div class="controls"><span class="key">W A S D</span> WALK &nbsp; <span class="key">MOUSE</span> LOOK AROUND<br><span class="key">SHIFT</span> WALK FASTER &nbsp; <span class="key">ESC</span> RELEASE MOUSE<br>Click the sound button for a subtle ambient drone.</div>
-  </div></div>
-  <script type="module">
-    import * as THREE from 'three';
-    const host=document.querySelector('#scene');
-    const scene=new THREE.Scene(); scene.background=new THREE.Color(0x080d14); scene.fog=new THREE.FogExp2(0x111820,.027);
-    const camera=new THREE.PerspectiveCamera(72,innerWidth/innerHeight,.1,320); camera.position.set(0,1.72,12); camera.rotation.order='YXZ';
-    const renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance'}); renderer.setSize(innerWidth,innerHeight); renderer.setPixelRatio(Math.min(devicePixelRatio,1.7)); renderer.shadowMap.enabled=true; renderer.shadowMap.type=THREE.PCFSoftShadowMap; renderer.toneMapping=THREE.ACESFilmicToneMapping; renderer.toneMappingExposure=.8; host.appendChild(renderer.domElement);
-    scene.add(new THREE.HemisphereLight(0x72829a,0x15110f,.42));
-    const moon=new THREE.DirectionalLight(0x8c9bb2,.55); moon.position.set(-25,35,-40); moon.castShadow=true; moon.shadow.mapSize.set(1024,1024); scene.add(moon);
-    const groundMat=new THREE.MeshStandardMaterial({color:0x202321,roughness:.96});
-    function box(x,y,z,sx,sy,sz,mat,shadow=true){const m=new THREE.Mesh(new THREE.BoxGeometry(sx,sy,sz),mat);m.position.set(x,y,z);m.castShadow=shadow;m.receiveShadow=true;scene.add(m);return m;}
-    // Long asphalt road, sidewalk strips and broken center markings.
-    box(0,-.17,-105,10,.3,250,new THREE.MeshStandardMaterial({color:0x171a1c,roughness:.92}));
-    box(-7,-.08,-105,4,.16,250,groundMat); box(7,-.08,-105,4,.16,250,groundMat);
-    const curbMat=new THREE.MeshStandardMaterial({color:0x434440,roughness:1}); box(-5,-.02,-105,.22,.28,250,curbMat,false);box(5,-.02,-105,.22,.28,250,curbMat,false);
-    const paint=new THREE.MeshStandardMaterial({color:0x9a9279,roughness:1});
-    for(let z=8;z>-220;z-=13)box(0,-.005,z,.12,.02,5,paint,false);
-    // Night sky moon and scattered stars.
-    const moonMesh=new THREE.Mesh(new THREE.SphereGeometry(3,24,16),new THREE.MeshBasicMaterial({color:0xc2c4b8}));moonMesh.position.set(-38,32,-170);scene.add(moonMesh);
-    const starGeo=new THREE.BufferGeometry(), starPos=[];for(let i=0;i<420;i++)starPos.push((Math.random()-.5)*230,12+Math.random()*65,-35-Math.random()*220);starGeo.setAttribute('position',new THREE.Float32BufferAttribute(starPos,3));scene.add(new THREE.Points(starGeo,new THREE.PointsMaterial({color:0xc1c6c2,size:.22,transparent:true,opacity:.65})));
-    // Houses: simple blockout silhouettes with dim windows, doors, pitched roofs and porches.
-    const wallColors=[0x343432,0x343a39,0x403936,0x303638,0x3c3934,0x34353a];
-    const windowMats=[new THREE.MeshStandardMaterial({color:0x756b51,emissive:0x2d2515,emissiveIntensity:.7}),new THREE.MeshStandardMaterial({color:0x18202a,emissive:0x06090d})];
-    function makeHouse(side,z,idx){
-      const x=side*10.2, w=6.4+Math.random()*2, h=4.4+Math.random()*1.7, d=8+Math.random()*4;
-      const wall=new THREE.MeshStandardMaterial({color:wallColors[idx%wallColors.length],roughness:1});
-      box(x,h/2-.05,z,w,h,d,wall);
-      const roofMat=new THREE.MeshStandardMaterial({color:0x17191b,roughness:1});
-      const roof=new THREE.Mesh(new THREE.ConeGeometry(w*.77,2.5,4),roofMat);roof.position.set(x,h+1,z);roof.rotation.y=Math.PI/4;roof.scale.z=d/Math.max(w,1);roof.castShadow=true;scene.add(roof);
-      const doorMat=new THREE.MeshStandardMaterial({color:0x211c19,roughness:1});box(x+side*1.25,1.05,z+d/2+.03,.92,2.1,.12,doorMat);
-      for(const wx of [x-1.6,x+1.6]){let wm=windowMats[(idx+(wx>x?1:0))%2];box(wx,2.65,z+d/2+.04,1.15,1.15,.09,wm,false);box(wx,2.65,z+d/2+.105,1.25,.07,.07,curbMat,false);box(wx,2.65,z+d/2+.105,.07,1.25,.07,curbMat,false);}
-      box(x,2.25,z+d/2+.65,3.8,.18,1.25,roofMat,false);box(x,1.02,z+d/2+1.1,2.4,.22,1.1,curbMat,false);
-      if(idx%2===0)box(x+side*1.8,2,z+d/2+.12,.24,.32,.06,new THREE.MeshStandardMaterial({color:0x66614e}),false);
-    }
-    for(let i=0;i<17;i++){let z=1-i*13;makeHouse(-1,z,i);makeHouse(1,z-5,i+4);}
-    // Street lamps with amber pools of light, gently irregular flicker.
-    const lamps=[];
-    function makeLamp(side,z){let x=side*5.7;const metal=new THREE.MeshStandardMaterial({color:0x252a29,metalness:.45,roughness:.75});
-      const pole=new THREE.Mesh(new THREE.CylinderGeometry(.075,.12,5.7,8),metal);pole.position.set(x,2.85,z);pole.castShadow=true;scene.add(pole);
-      const arm=box(x-side*.55,5.55,z,.95,.1,.12,metal,false);arm.rotation.z=side*.12;
-      const bulb=new THREE.Mesh(new THREE.SphereGeometry(.16,10,8),new THREE.MeshBasicMaterial({color:0xffd69a}));bulb.position.set(x-side*.95,5.37,z);scene.add(bulb);
-      const light=new THREE.PointLight(0xffbf79,17,15,2);light.position.set(x-side*.95,5.15,z);scene.add(light);lamps.push({light,bulb,phase:Math.random()*10});
-    }
-    for(let i=0;i<12;i++){let z=-4-i*20;makeLamp(i%2===0?-1:1,z);}
-    // Bare trees and roadside details.
-    const bark=new THREE.MeshStandardMaterial({color:0x292724,roughness:1}), leaves=new THREE.MeshStandardMaterial({color:0x171d1b,roughness:1});
-    function tree(x,z){const trunk=new THREE.Mesh(new THREE.CylinderGeometry(.16,.27,3.8,7),bark);trunk.position.set(x,1.8,z);trunk.castShadow=true;scene.add(trunk);for(let i=0;i<5;i++){let b=new THREE.Mesh(new THREE.CylinderGeometry(.04,.1,2.4,5),bark);b.position.set(x+(Math.random()-.5)*1.3,3.2+Math.random()*1.4,z+(Math.random()-.5)*1.2);b.rotation.z=(Math.random()-.5)*1.2;b.castShadow=true;scene.add(b);}const crown=new THREE.Mesh(new THREE.IcosahedronGeometry(1.7,1),leaves);crown.position.set(x,4.7,z);crown.scale.set(1.15,1.2,.95);crown.castShadow=true;scene.add(crown);}
-    for(let i=0;i<25;i++){tree((i%2?1:-1)*(7.8+Math.random()*1.5),-i*10-3);}
-    // A parked, unoccupied car to give the street scale.
-    const carBody=new THREE.MeshStandardMaterial({color:0x242a2c,metalness:.35,roughness:.55});
-    function car(x,z){box(x,.68,z,2.2,.85,4.3,carBody);box(x,.65,z-.15,1.8,.75,2.15,new THREE.MeshStandardMaterial({color:0x171b1d,roughness:.4}));for(let side of [-1,1])for(let zz of [-1.35,1.35]){let wheel=new THREE.Mesh(new THREE.CylinderGeometry(.38,.38,.2,12),new THREE.MeshStandardMaterial({color:0x090a0b}));wheel.rotation.z=Math.PI/2;wheel.position.set(x+side*1.08,.38,z+zz);scene.add(wheel);}let tail=new THREE.MeshBasicMaterial({color:0x581b19});box(x-0.7,.72,z+2.17,.23,.18,.04,tail,false);box(x+.7,.72,z+2.17,.23,.18,.04,tail,false);}
-    car(-3.55,-29);car(3.55,-81);
-    // Mailboxes / fence-like posts add a quiet residential feel.
-    for(let i=0;i<8;i++){let side=i%2?-1:1,z=-12-i*27,x=side*7.45;box(x,.85,z,.65,.55,.72,new THREE.MeshStandardMaterial({color:0x353837,roughness:.8}));box(x,.4,z,.1,.9,.1,bark,false);}
-    // Player movement and mouse look.
-    const keys={};let yaw=0,pitch=0,locked=false,started=false;const velocity=new THREE.Vector3();
-    const overlay=document.querySelector('#overlay');
-    document.querySelector('#begin').addEventListener('click',()=>{started=true;overlay.classList.add('hidden');renderer.domElement.requestPointerLock?.();});
-    document.addEventListener('pointerlockchange',()=>{locked=document.pointerLockElement===renderer.domElement;if(started&&!locked)overlay.classList.remove('hidden');else if(locked)overlay.classList.add('hidden');});
-    document.addEventListener('mousemove',e=>{if(!locked)return;yaw-=e.movementX*.0022;pitch-=e.movementY*.0018;pitch=Math.max(-1.05,Math.min(1.05,pitch));camera.rotation.set(pitch,yaw,0,'YXZ');});
-    addEventListener('keydown',e=>{keys[e.code]=true;if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Space'].includes(e.code))e.preventDefault();});addEventListener('keyup',e=>keys[e.code]=false);
-    let audio=null,osc=null,filter=null,ambientGain=null,soundOn=false;
-    function toggleSound(){if(!audio){audio=new (window.AudioContext||window.webkitAudioContext)();osc=audio.createOscillator();osc.type='sawtooth';osc.frequency.value=48;filter=audio.createBiquadFilter();filter.type='lowpass';filter.frequency.value=105;ambientGain=audio.createGain();ambientGain.gain.value=0;osc.connect(filter).connect(ambientGain).connect(audio.destination);osc.start();}if(audio.state==='suspended')audio.resume();soundOn=!soundOn;ambientGain.gain.setTargetAtTime(soundOn?.018:0,audio.currentTime,.5);document.querySelector('#sound-toggle').textContent=`SOUND: ${soundOn?'ON':'OFF'}`;}
-    document.querySelector('#sound-toggle').addEventListener('click',toggleSound);
-    let last=performance.now(),elapsed=0;
-    function animate(now){requestAnimationFrame(animate);const dt=Math.min((now-last)/1000,.05);last=now;elapsed+=dt;
-      lamps.forEach(({light,bulb,phase},i)=>{let flicker=1;if(Math.sin(elapsed*1.7+phase)>0.986)flicker=.15;else flicker=.88+.12*Math.sin(elapsed*2.2+phase);light.intensity=17*flicker;bulb.material.color.setHex(flicker<.3?0x594a39:0xffd69a);});
-      if(locked){let forward=Number(!!keys.KeyW||!!keys.ArrowUp)-Number(!!keys.KeyS||!!keys.ArrowDown);let side=Number(!!keys.KeyD||!!keys.ArrowRight)-Number(!!keys.KeyA||!!keys.ArrowLeft);let speed=(keys.ShiftLeft||keys.ShiftRight)?7:4.2;let dir=new THREE.Vector3(side,0,-forward).normalize().applyAxisAngle(new THREE.Vector3(0,1,0),yaw);camera.position.addScaledVector(dir,speed*dt);camera.position.x=THREE.MathUtils.clamp(camera.position.x,-4.25,4.25);camera.position.z=THREE.MathUtils.clamp(camera.position.z,-216,12);camera.position.y=1.72+Math.sin(elapsed*8)*((forward||side)?.025:0);}
-      scene.fog.density=.026+.002*Math.sin(elapsed*.18);renderer.render(scene,camera);
-    }
-    requestAnimationFrame(animate);
-    addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);renderer.setPixelRatio(Math.min(devicePixelRatio,1.7));});
-  </script>
+<div id="scene"></div><div class="vignette"></div><div class="grain"></div>
+<div id="hud"><header class="top"><div class="brand">GET HOME BY 9<small>NEIGHBORHOOD • AFTER DARK</small></div><div id="clock">8:42 PM<small>GET HOME BEFORE NINE</small></div></header><footer class="bottom"><div id="objective">The street is quiet tonight.<br>Keep walking. Don't look back.</div><div id="coords">WALKING HOME<br>ROSEWOOD LANE</div></footer></div>
+<button id="sound">SOUND: OFF</button>
+<div id="touchControls" class="touch-controls" aria-label="Touch game controls"><div class="stick" id="moveStick" aria-label="Movement joystick"><div class="knob"></div></div><div class="right-controls"><button id="flashButton" aria-pressed="false">FLASHLIGHT</button><div class="stick" id="lookStick" aria-label="Look joystick"><div class="knob"></div></div></div></div>
+<div id="overlay"><section class="card"><div class="eyebrow">A QUIET STREET • A LONG WALK HOME</div><h1>GET HOME<br>BY NINE</h1><p class="subtitle">The neighborhood looks familiar after dark.<br>It just feels like something is different tonight.</p><button id="begin">STEP INTO THE STREET</button><p class="subtitle" style="font-size:11px;margin-bottom:0">Mobile: left stick to walk, right stick to look.<br>Computer: WASD + mouse. Shift to move faster.</p></section></div>
+<script type="module">
+import * as THREE from 'three';
+const host=document.querySelector('#scene'),scene=new THREE.Scene();scene.background=new THREE.Color(0x080d14);scene.fog=new THREE.FogExp2(0x111820,.027);
+const camera=new THREE.PerspectiveCamera(72,innerWidth/innerHeight,.1,320);camera.position.set(0,1.72,12);camera.rotation.order='YXZ';
+const renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance'});renderer.setSize(innerWidth,innerHeight);renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=.8;host.appendChild(renderer.domElement);
+scene.add(new THREE.HemisphereLight(0x72829a,0x15110f,.42));const moon=new THREE.DirectionalLight(0x8c9bb2,.55);moon.position.set(-25,35,-40);moon.castShadow=true;moon.shadow.mapSize.set(1024,1024);scene.add(moon);
+function box(x,y,z,sx,sy,sz,mat,shadow=true){const m=new THREE.Mesh(new THREE.BoxGeometry(sx,sy,sz),mat);m.position.set(x,y,z);m.castShadow=shadow;m.receiveShadow=true;scene.add(m);return m}
+const road=new THREE.MeshStandardMaterial({color:0x171a1c,roughness:.92}),sidewalk=new THREE.MeshStandardMaterial({color:0x202321,roughness:.96}),curb=new THREE.MeshStandardMaterial({color:0x434440,roughness:1});
+box(0,-.17,-105,10,.3,250,road);box(-7,-.08,-105,4,.16,250,sidewalk);box(7,-.08,-105,4,.16,250,sidewalk);box(-5,-.02,-105,.22,.28,250,curb,false);box(5,-.02,-105,.22,.28,250,curb,false);for(let z=8;z>-220;z-=13)box(0,-.005,z,.12,.02,5,new THREE.MeshStandardMaterial({color:0x807b68}),false);
+const moonBall=new THREE.Mesh(new THREE.SphereGeometry(3,20,12),new THREE.MeshBasicMaterial({color:0xc2c4b8}));moonBall.position.set(-38,32,-170);scene.add(moonBall);const starGeo=new THREE.BufferGeometry(),starPos=[];for(let i=0;i<320;i++)starPos.push((Math.random()-.5)*230,12+Math.random()*65,-35-Math.random()*220);starGeo.setAttribute('position',new THREE.Float32BufferAttribute(starPos,3));scene.add(new THREE.Points(starGeo,new THREE.PointsMaterial({color:0xc1c6c2,size:.22,transparent:true,opacity:.65})));
+const wallColors=[0x343432,0x343a39,0x403936,0x303638,0x3c3934,0x34353a];
+function house(side,z,i){const x=side*10.2,w=6.4+Math.random()*2,h=4.4+Math.random()*1.7,d=8+Math.random()*4;box(x,h/2-.05,z,w,h,d,new THREE.MeshStandardMaterial({color:wallColors[i%wallColors.length],roughness:1}));const roofmat=new THREE.MeshStandardMaterial({color:0x17191b,roughness:1});const roof=new THREE.Mesh(new THREE.ConeGeometry(w*.77,2.5,4),roofmat);roof.position.set(x,h+1,z);roof.rotation.y=Math.PI/4;roof.scale.z=d/w;roof.castShadow=true;scene.add(roof);box(x+side*1.25,1.05,z+d/2+.03,.92,2.1,.12,new THREE.MeshStandardMaterial({color:0x211c19}));for(const wx of [x-1.6,x+1.6]){const lit=((i+(wx>x?1:0))%4===0),mat=new THREE.MeshStandardMaterial({color:lit?0x756b51:0x18202a,emissive:lit?0x2d2515:0x06090d,emissiveIntensity:.7});box(wx,2.65,z+d/2+.04,1.15,1.15,.09,mat,false);box(wx,2.65,z+d/2+.105,1.25,.07,.07,curb,false);box(wx,2.65,z+d/2+.105,.07,1.25,.07,curb,false)}box(x,2.25,z+d/2+.65,3.8,.18,1.25,roofmat,false);box(x,1.02,z+d/2+1.1,2.4,.22,1.1,curb,false)}
+for(let i=0;i<17;i++){house(-1,1-i*13,i);house(1,-4-i*13,i+4)}
+const lamps=[];function lamp(side,z){const x=side*5.7,metal=new THREE.MeshStandardMaterial({color:0x252a29,metalness:.4,roughness:.75}),pole=new THREE.Mesh(new THREE.CylinderGeometry(.075,.12,5.7,8),metal);pole.position.set(x,2.85,z);pole.castShadow=true;scene.add(pole);box(x-side*.55,5.55,z,.95,.1,.12,metal,false);const bulb=new THREE.Mesh(new THREE.SphereGeometry(.16,10,8),new THREE.MeshBasicMaterial({color:0xffd69a}));bulb.position.set(x-side*.95,5.37,z);scene.add(bulb);const light=new THREE.PointLight(0xffbf79,17,15,2);light.position.set(x-side*.95,5.15,z);scene.add(light);lamps.push({light,bulb,phase:Math.random()*10})}for(let i=0;i<12;i++)lamp(i%2?-1:1,-4-i*20);
+const bark=new THREE.MeshStandardMaterial({color:0x292724}),leaves=new THREE.MeshStandardMaterial({color:0x171d1b});function tree(x,z){const trunk=new THREE.Mesh(new THREE.CylinderGeometry(.16,.27,3.8,7),bark);trunk.position.set(x,1.8,z);trunk.castShadow=true;scene.add(trunk);for(let i=0;i<4;i++){const b=new THREE.Mesh(new THREE.CylinderGeometry(.04,.1,2.4,5),bark);b.position.set(x+(Math.random()-.5)*1.3,3.2+Math.random()*1.4,z+(Math.random()-.5));b.rotation.z=(Math.random()-.5)*1.2;scene.add(b)}const crown=new THREE.Mesh(new THREE.IcosahedronGeometry(1.7,1),leaves);crown.position.set(x,4.7,z);crown.scale.set(1.15,1.2,.95);scene.add(crown)}for(let i=0;i<22;i++)tree((i%2?1:-1)*8,-i*10-3);
+const carmat=new THREE.MeshStandardMaterial({color:0x242a2c,metalness:.3,roughness:.6});function car(x,z){box(x,.68,z,2.2,.85,4.3,carmat);box(x,.65,z-.15,1.8,.75,2.15,new THREE.MeshStandardMaterial({color:0x171b1d}),false);for(const s of [-1,1])for(const zz of [-1.35,1.35]){const wheel=new THREE.Mesh(new THREE.CylinderGeometry(.38,.38,.2,12),new THREE.MeshStandardMaterial({color:0x090a0b}));wheel.rotation.z=Math.PI/2;wheel.position.set(x+s*1.08,.38,z+zz);scene.add(wheel)}}car(-3.55,-29);car(3.55,-81);
+const keys={},move={x:0,y:0},look={x:0,y:0};let yaw=0,pitch=0,locked=false,started=false,touchMode=matchMedia('(pointer:coarse)').matches;
+const overlay=document.querySelector('#overlay'),touchControls=document.querySelector('#touchControls');function showControls(){touchMode=matchMedia('(pointer:coarse)').matches;touchControls.classList.toggle('active',started&&touchMode)}
+function start(){started=true;overlay.classList.add('hidden');showControls();if(!touchMode)renderer.domElement.requestPointerLock?.()}document.querySelector('#begin').addEventListener('click',start);document.addEventListener('pointerlockchange',()=>{locked=document.pointerLockElement===renderer.domElement;if(started&&!touchMode&&!locked)overlay.classList.remove('hidden');if(locked)overlay.classList.add('hidden')});document.addEventListener('mousemove',e=>{if(!locked)return;yaw-=e.movementX*.0022;pitch=THREE.MathUtils.clamp(pitch-e.movementY*.0018,-1.05,1.05);camera.rotation.set(pitch,yaw,0,'YXZ')});
+addEventListener('keydown',e=>{keys[e.code]=true;if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Space'].includes(e.code))e.preventDefault();if(e.code==='KeyF')toggleFlashlight()});addEventListener('keyup',e=>keys[e.code]=false);
+function bindStick(el,state,isLook){const knob=el.querySelector('.knob');let id=null,cx=0,cy=0;function update(e){const dx=e.clientX-cx,dy=e.clientY-cy,r=el.clientWidth*.34,len=Math.hypot(dx,dy),scale=len>r?r/len:1;const x=dx*scale,y=dy*scale;knob.style.transform=`translate(calc(-50% + ${x}px),calc(-50% + ${y}px))`;state.x=x/r;state.y=y/r;if(isLook){yaw-=state.x*.045;pitch=THREE.MathUtils.clamp(pitch+state.y*.035,-1.05,1.05);camera.rotation.set(pitch,yaw,0,'YXZ')}}el.addEventListener('pointerdown',e=>{e.preventDefault();id=e.pointerId;const rect=el.getBoundingClientRect();cx=rect.left+rect.width/2;cy=rect.top+rect.height/2;el.setPointerCapture(id);update(e)});el.addEventListener('pointermove',e=>{if(e.pointerId===id){e.preventDefault();update(e)}});const end=e=>{if(e.pointerId!==id)return;id=null;state.x=0;state.y=0;knob.style.transform='translate(-50%,-50%)'};el.addEventListener('pointerup',end);el.addEventListener('pointercancel',end)}bindStick(document.querySelector('#moveStick'),move,false);bindStick(document.querySelector('#lookStick'),look,true);
+let flashlight=false;const flashButton=document.querySelector('#flashButton');function toggleFlashlight(){flashlight=!flashlight;flashButton.setAttribute('aria-pressed',String(flashlight));flashButton.textContent=flashlight?'LIGHT ON':'FLASHLIGHT'}flashButton.addEventListener('click',toggleFlashlight);
+let audio=null,ambient=null,soundOn=false;function toggleSound(){if(!audio){audio=new(window.AudioContext||window.webkitAudioContext)();const osc=audio.createOscillator(),filter=audio.createBiquadFilter();ambient=audio.createGain();osc.type='sawtooth';osc.frequency.value=48;filter.type='lowpass';filter.frequency.value=105;ambient.gain.value=0;osc.connect(filter).connect(ambient).connect(audio.destination);osc.start()}if(audio.state==='suspended')audio.resume();soundOn=!soundOn;ambient.gain.setTargetAtTime(soundOn?.018:0,audio.currentTime,.5);document.querySelector('#sound').textContent=`SOUND: ${soundOn?'ON':'OFF'}`}document.querySelector('#sound').addEventListener('click',toggleSound);
+let last=performance.now(),elapsed=0;function animate(now){requestAnimationFrame(animate);const dt=Math.min((now-last)/1000,.05);last=now;elapsed+=dt;lamps.forEach(({light,bulb,phase})=>{let f=Math.sin(elapsed*1.7+phase)>.986?.15:.88+.12*Math.sin(elapsed*2.2+phase);light.intensity=17*f;bulb.material.color.setHex(f<.3?0x594a39:0xffd69a)});
+const fwd=(Number(keys.KeyW||keys.ArrowUp)-Number(keys.KeyS||keys.ArrowDown))-move.y;const strafe=(Number(keys.KeyD||keys.ArrowRight)-Number(keys.KeyA||keys.ArrowLeft))+move.x;const speed=(keys.ShiftLeft||keys.ShiftRight)?7:4.2;if(Math.abs(fwd)+Math.abs(strafe)>.05){const dir=new THREE.Vector3(strafe,0,-fwd).normalize().applyAxisAngle(new THREE.Vector3(0,1,0),yaw);camera.position.addScaledVector(dir,speed*dt)}camera.position.x=THREE.MathUtils.clamp(camera.position.x,-4.25,4.25);camera.position.z=THREE.MathUtils.clamp(camera.position.z,-216,12);camera.position.y=1.72+Math.sin(elapsed*8)*((Math.abs(fwd)+Math.abs(strafe)>.05)?.025:0);scene.fog.density=.026+.002*Math.sin(elapsed*.18);renderer.render(scene,camera)}requestAnimationFrame(animate);
+addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));showControls()});let secs=0;setInterval(()=>{secs++;const total=42+secs;document.querySelector('#clock').firstChild.textContent=`${8+Math.floor(total/60)}:${String(total%60).padStart(2,'0')} PM`},60000);
+</script>
 </body>
 </html>
